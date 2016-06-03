@@ -257,4 +257,26 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return date('Y-m-d H:i:s', $this->updated_at);
     }
+
+    /**
+     * Property transformation method
+     * @see https://github.com/yiisoft/yii2/blob/master/docs/guide/db-active-record.md#data-transformation-
+     *
+     * @return string
+     */
+    public function getNamedRole():string
+    {
+        return self::namedRoles()[$this->role];
+    }
+
+    /**
+     * Property transformation method
+     * @see https://github.com/yiisoft/yii2/blob/master/docs/guide/db-active-record.md#data-transformation-
+     *
+     * @return string
+     */
+    public function getNamedStatus():string
+    {
+        return self::namedStatuses()[$this->status];
+    }
 }

@@ -20,7 +20,7 @@ trait Helpers
      * @param bool $allowCaching
      * @throws ForbiddenHttpException
      */
-    public function can(string $permission, array $params = [], $allowCaching = true)
+    protected function can(string $permission, array $params = [], $allowCaching = true)
     {
         if (!Yii::$app->user->can($permission, $params, $allowCaching)) {
             $exceptionMessage = $params['exceptionMessage'] ?? 'You are not allowed to perform this action.';

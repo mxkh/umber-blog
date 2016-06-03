@@ -26,16 +26,46 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'username',
-            'auth_key',
-            'password_hash',
-            'password_reset_token',
-            // 'email:email',
-            // 'status',
-            // 'role',
-            // 'created_at',
-            // 'updated_at',
+            //'auth_key',
+            //'password_hash',
+            //'password_reset_token',
+            'email:email',
+            [
+                'attribute' => 'status',
+                'filter' => \common\models\User::namedStatuses(),
+                'content' => function (\common\models\User $data) {
+                    return $data->getNamedStatus();
+                }
+            ],
+            [
+                'attribute' => 'role',
+                'filter' => \common\models\User::namedRoles(),
+                'content' => function (\common\models\User $data) {
+                    return $data->getNamedRole();
+                }
+            ],
+            'createdAt',
+            'updatedAt',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update} {delete} {ban}',
+                'buttons' => [
+                    'ban' => function ($url, \common\models\User $model) {
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-ban-circle"></span>',
+                            $url,
+                            [
+                                'title' => 'Ban',
+                                'aria-label' => 'Ban',
+                                'data-confirm' => 'Are you sure you want to ban this user?',
+                                'data-method' => 'post',
+                                'data-pjax' => '0',
+                            ]
+                        );
+                    },
+                ],
+            ],
         ],
     ]); ?>
 </div>

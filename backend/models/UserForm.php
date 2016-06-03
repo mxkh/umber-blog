@@ -109,48 +109,4 @@ class UserForm extends Model
 
         return $this;
     }
-
-    /**
-     * @return User
-     * @throws ForbiddenHttpException
-     */
-    public function create(): User
-    {
-        $this->can('createUser'); // Check permission before create
-
-        $model = new User();
-        $model->setAttributes($this->getAttributes(null, ['password']));
-        $model->setPassword($this->password);
-        $model->generateAuthKey();
-        $model->save(false);
-
-        $this->assignRule->assign($model, User::namedRoles()[$this->role]);
-
-        return $model;
-    }
-
-    /**
-     * @param User $model
-     * @return User
-     * @throws ForbiddenHttpException
-     * @throws \Exception
-     */
-    public function update(User $model): User
-    {
-        $this->can('updateUser'); // Check permission before update
-
-        $role = $model->getOldAttribute('role');
-        $this->role = $this->status == User::STATUS_BANNED ? User::ROLE_BANNED : $this->role;
-
-        $model->setAttributes($this->getAttributes(null, ['password']));
-        $model->setPassword($this->password);
-        $model->generateAuthKey();
-        $model->update(false);
-
-        $this->assignRule
-            ->revoke($model, User::namedRoles()[$role])
-            ->assign($model, User::namedRoles()[$this->role]);
-
-        return $model;
-    }
 }

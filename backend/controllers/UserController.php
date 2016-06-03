@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\UserForm;
 use common\components\rbac\AssignRule;
+use common\repositories\user\UserRepository;
 use Yii;
 use common\models\User;
 use common\models\UserSearch;
@@ -26,6 +27,10 @@ class UserController extends Controller
      * @var AssignRule
      */
     private $assignRule;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     /**
      * UserController constructor.
@@ -33,13 +38,15 @@ class UserController extends Controller
      * @param Module $module
      * @param AssignRule $assignRule
      * @param UserForm $userForm
+     * @param UserRepository $userRepository
      * @param array $config
      */
-    public function __construct($id, Module $module, AssignRule $assignRule, UserForm $userForm, array $config = [])
+    public function __construct($id, Module $module, AssignRule $assignRule, UserForm $userForm, UserRepository $userRepository, array $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->userForm = $userForm;
         $this->assignRule = $assignRule;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -66,6 +73,7 @@ class UserController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'ban' => ['POST'],
                 ],
             ],
         ];
@@ -108,7 +116,7 @@ class UserController extends Controller
         $this->userForm->setScenario(UserForm::SCENARIO_CREATE);
 
         if ($this->userForm->load(Yii::$app->request->post()) && $this->userForm->validate()) {
-            $model = $this->userForm->create();
+            $model = $this->userRepository->create($this->userForm);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -131,15 +139,10 @@ class UserController extends Controller
         // Load form from model
         $this->userForm
             ->setIsNewRecord(false)
-            ->setAttributes([
-                'email' => $model->email,
-                'username' => $model->username,
-                'role' => $model->role,
-                'status' => $model->status,
-            ]);
+            ->setAttributes($model->getAttributes());
 
         if ($this->userForm->load(Yii::$app->request->post()) && $this->userForm->validate()) {
-            $model = $this->userForm->update($model);
+            $model = $this->userRepository->update($this->userForm, $model);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -159,9 +162,24 @@ class UserController extends Controller
     {
         /** @var User $model */
         $model = $this->findModel($id);
-        $model->delete();
 
-        $this->assignRule->revoke($model, User::namedRoles()[$model->role]);
+        $this->userRepository->delete($model);
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Ban an existing User.
+     * If ban is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionBan($id)
+    {
+        /** @var User $model */
+        $model = $this->findModel($id);
+
+        $this->userRepository->ban($model);
 
         return $this->redirect(['index']);
     }
