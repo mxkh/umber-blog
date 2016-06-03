@@ -3,6 +3,7 @@ namespace frontend\controllers;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\base\Module;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -18,6 +19,43 @@ use frontend\models\ContactForm;
  */
 class SiteController extends Controller
 {
+    /**
+     * @var SignupForm
+     */
+    protected $signUpForm;
+    /**
+     * @var LoginForm
+     */
+    protected $loginForm;
+    /**
+     * @var ContactForm
+     */
+    protected $contactForm;
+
+    /**
+     * SiteController constructor.
+     * @param string $id
+     * @param Module $module
+     * @param ContactForm $contactForm
+     * @param LoginForm $loginForm
+     * @param SignupForm $signUpForm
+     * @param array $config
+     */
+    public function __construct(
+        $id,
+        Module $module,
+        ContactForm $contactForm,
+        LoginForm $loginForm,
+        SignupForm $signUpForm,
+        array $config = []
+    ) {
+        parent::__construct($id, $module, $config);
+
+        $this->signUpForm = $signUpForm;
+        $this->contactForm = $contactForm;
+        $this->loginForm = $loginForm;
+    }
+
     /**
      * @inheritdoc
      */
@@ -86,14 +124,13 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($this->loginForm->load(Yii::$app->request->post()) && $this->loginForm->login()) {
             return $this->goBack();
-        } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
         }
+
+        return $this->render('login', [
+            'model' => $this->loginForm,
+        ]);
     }
 
     /**
@@ -115,20 +152,20 @@ class SiteController extends Controller
      */
     public function actionContact()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
+        if ($this->contactForm->load(Yii::$app->request->post()) && $this->contactForm->validate()) {
+
+            if ($this->contactForm->sendEmail(Yii::$app->params['adminEmail'])) {
                 Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
             } else {
                 Yii::$app->session->setFlash('error', 'There was an error sending email.');
             }
 
             return $this->refresh();
-        } else {
-            return $this->render('contact', [
-                'model' => $model,
-            ]);
         }
+
+        return $this->render('contact', [
+            'model' => $this->contactForm,
+        ]);
     }
 
     /**
@@ -148,9 +185,8 @@ class SiteController extends Controller
      */
     public function actionSignup()
     {
-        $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
+        if ($this->signUpForm->load(Yii::$app->request->post())) {
+            if ($user = $this->signUpForm->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
                 }
@@ -158,7 +194,7 @@ class SiteController extends Controller
         }
 
         return $this->render('signup', [
-            'model' => $model,
+            'model' => $this->signUpForm,
         ]);
     }
 

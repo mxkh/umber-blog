@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use common\components\rbac\AssignRule;
 use yii\base\Model;
 use common\models\User;
 
@@ -13,6 +14,22 @@ class SignupForm extends Model
     public $email;
     public $password;
 
+    /**
+     * @var AssignRule
+     */
+    protected $assignRule;
+
+    /**
+     * SignupForm constructor.
+     * @param AssignRule $rule
+     * @param array $config
+     */
+    public function __construct(AssignRule $rule, array $config = [])
+    {
+        $this->assignRule = $rule;
+
+        parent::__construct($config);
+    }
 
     /**
      * @inheritdoc
@@ -46,13 +63,20 @@ class SignupForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
+        $user->role = User::ROLE_AUTHOR;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        
-        return $user->save() ? $user : null;
+
+        if (!$user->save()) {
+            return null;
+        }
+
+        $this->assignRule->assign($user, 'author');
+
+        return $user;
     }
 }
