@@ -2,6 +2,7 @@
 
 /* @var $this \yii\web\View */
 /* @var $content string */
+/* @var \common\models\User $user */
 
 use backend\assets\AppAsset;
 use yii\helpers\Html;
@@ -11,6 +12,7 @@ use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
 
 AppAsset::register($this);
+$user = Yii::$app->user->getIdentity();
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -40,6 +42,9 @@ AppAsset::register($this);
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        $menuItems[] = ['label' => 'Posts', 'url' => ['/post']];
+        $menuItems[] = ['label' => 'Users', 'url' => ['/user']];
+        $menuItems[] = ['label' => 'Categories', 'url' => ['/tag']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

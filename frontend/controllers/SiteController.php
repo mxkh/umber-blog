@@ -1,9 +1,14 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\post\Post;
+use common\models\tag\Query;
+use common\repositories\post\PostRepository;
+use common\repositories\tag\TagRepository;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\base\Module;
+use yii\data\Pagination;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -31,6 +36,14 @@ class SiteController extends Controller
      * @var ContactForm
      */
     protected $contactForm;
+    /**
+     * @var TagRepository
+     */
+    private $tagRepository;
+    /**
+     * @var PostRepository
+     */
+    private $postRepository;
 
     /**
      * SiteController constructor.
@@ -39,6 +52,8 @@ class SiteController extends Controller
      * @param ContactForm $contactForm
      * @param LoginForm $loginForm
      * @param SignupForm $signUpForm
+     * @param TagRepository $tagRepository
+     * @param PostRepository $postRepository
      * @param array $config
      */
     public function __construct(
@@ -47,6 +62,8 @@ class SiteController extends Controller
         ContactForm $contactForm,
         LoginForm $loginForm,
         SignupForm $signUpForm,
+        TagRepository $tagRepository,
+        PostRepository $postRepository,
         array $config = []
     ) {
         parent::__construct($id, $module, $config);
@@ -54,6 +71,8 @@ class SiteController extends Controller
         $this->signUpForm = $signUpForm;
         $this->contactForm = $contactForm;
         $this->loginForm = $loginForm;
+        $this->tagRepository = $tagRepository;
+        $this->postRepository = $postRepository;
     }
 
     /**
@@ -106,11 +125,19 @@ class SiteController extends Controller
     /**
      * Displays homepage.
      *
+     * @param string $tag
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($tag = '')
     {
-        return $this->render('index');
+        $data = $this->postRepository->getPostFilteredByTag($tag, ['user'], 10);
+        $tags = $this->tagRepository->allActiveTag();
+
+        return $this->render('index', [
+            'posts' => $data['posts'],
+            'pagination' => $data['pagination'],
+            'tags' => $tags,
+        ]);
     }
 
     /**

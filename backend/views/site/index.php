@@ -1,51 +1,48 @@
 <?php
 
 /* @var $this yii\web\View */
+/* @var \common\models\User $user */
 
 $this->title = 'My Yii Application';
+$user = Yii::$app->user->getIdentity();
 ?>
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
+        <h1>Hello, <?= $user->username ?>!</h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+        <p class="lead">This is admin dashboard.</p>
     </div>
 
     <div class="body-content">
 
         <div class="row">
             <div class="col-lg-4">
-                <h2>Heading</h2>
+                <h2><span class="glyphicon glyphicon-file"></span> Posts</h2>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+                <p>In this section you can manage all posts.</p>
 
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+                <p>
+                    <a class="btn btn-default" href="<?= \yii\helpers\Url::to(['/post']) ?>">Manage posts &raquo;</a>
+                </p>
             </div>
+                <div class="col-lg-4">
+                    <h2><span class="glyphicon glyphicon-user"></span> Users</h2>
+
+                    <p>In this section you can manage all users.</p>
+
+                    <p>
+                        <a class="btn btn-default" href="<?= \yii\helpers\Url::to(['/user']) ?>">Manage users &raquo;</a>
+                    </p>
+                </div>
             <div class="col-lg-4">
-                <h2>Heading</h2>
+                <h2><span class="glyphicon glyphicon-tags"></span> Categories</h2>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+                <p>In this section you can manage all categories.</p>
 
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+                <p>
+                    <a class="btn btn-default" href="<?= \yii\helpers\Url::to(['/tag']) ?>">Manage categories &raquo;</a>
+                </p>
             </div>
         </div>
 

@@ -3,7 +3,6 @@
 namespace backend\controllers;
 
 use backend\models\UserForm;
-use common\components\rbac\AssignRule;
 use common\repositories\user\UserRepository;
 use Yii;
 use common\models\User;
@@ -24,10 +23,6 @@ class UserController extends Controller
      */
     private $userForm;
     /**
-     * @var AssignRule
-     */
-    private $assignRule;
-    /**
      * @var UserRepository
      */
     private $userRepository;
@@ -36,16 +31,14 @@ class UserController extends Controller
      * UserController constructor.
      * @param string $id
      * @param Module $module
-     * @param AssignRule $assignRule
      * @param UserForm $userForm
      * @param UserRepository $userRepository
      * @param array $config
      */
-    public function __construct($id, Module $module, AssignRule $assignRule, UserForm $userForm, UserRepository $userRepository, array $config = [])
+    public function __construct($id, Module $module, UserForm $userForm, UserRepository $userRepository, array $config = [])
     {
         parent::__construct($id, $module, $config);
         $this->userForm = $userForm;
-        $this->assignRule = $assignRule;
         $this->userRepository = $userRepository;
     }
 

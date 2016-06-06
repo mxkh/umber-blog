@@ -34,6 +34,8 @@ class m160603_061149_create_table_post extends Migration
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);
+
+        $this->addForeignKey('post_fk_1', $this->tableName, 'user_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE');
     }
 
     /**
@@ -41,6 +43,7 @@ class m160603_061149_create_table_post extends Migration
      */
     public function down()
     {
+        $this->dropForeignKey('pk1', '{{%post}}');
         $this->dropTable($this->tableName);
     }
 }

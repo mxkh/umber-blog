@@ -32,7 +32,14 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => [
+                '/' => 'site/index',
+                'post/<slug>' => 'post/view',
+                'my-post/edit/<slug>' => 'post/edit',
+                'my-post/<slug>' => 'post/user-post',
+                'my-posts' => 'post/user-posts',
+                'add-post' => 'post/create',
             ],
         ],
 

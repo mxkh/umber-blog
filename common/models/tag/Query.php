@@ -9,10 +9,13 @@ namespace common\models\tag;
  */
 class Query extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    /**
+     * @return $this
+     */
+    public function notHidden()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere(Tag::tableName() . '.hide=0');
+    }
 
     /**
      * @inheritdoc

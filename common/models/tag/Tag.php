@@ -11,6 +11,7 @@ use common\models\post\Post;
  * @property integer $id
  * @property string $name
  * @property integer $frequency
+ * @property integer $hide
  *
  * @property PostTagAssn[] $postTagAssns
  * @property Post[] $posts
@@ -32,7 +33,8 @@ class Tag extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['frequency'], 'integer'],
+            [['frequency', 'hide'], 'integer'],
+            [['frequency', 'hide'], 'default', 'value' => 0],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -46,6 +48,7 @@ class Tag extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'frequency' => 'Frequency',
+            'hide' => 'Hide',
         ];
     }
 

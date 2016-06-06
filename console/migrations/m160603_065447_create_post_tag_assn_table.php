@@ -24,8 +24,8 @@ class m160603_065447_create_post_tag_assn_table extends Migration
 
         $this->addPrimaryKey('', $this->tableName, ['post_id', 'tag_id']);
 
-        $this->addForeignKey('pk1', $this->tableName, 'post_id', '{{%post}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey('pk2', $this->tableName, 'tag_id', '{{%tag}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('post_tag_assn_fk1', $this->tableName, 'post_id', '{{%post}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('post_tag_assn_fk2', $this->tableName, 'tag_id', '{{%tag}}', 'id', 'CASCADE', 'CASCADE');
     }
 
     /**
@@ -33,8 +33,8 @@ class m160603_065447_create_post_tag_assn_table extends Migration
      */
     public function down()
     {
-        $this->dropForeignKey('pk1', $this->tableName);
-        $this->dropForeignKey('pk2', $this->tableName);
+        $this->dropForeignKey('post_tag_assn_fk1', $this->tableName);
+        $this->dropForeignKey('post_tag_assn_fk1', $this->tableName);
         $this->dropTable($this->tableName);
     }
 }

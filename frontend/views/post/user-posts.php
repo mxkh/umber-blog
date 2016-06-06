@@ -3,29 +3,34 @@
 /* @var $this yii\web\View */
 /* @var $posts \common\models\post\Post[] */
 /* @var $pagination \yii\data\Pagination */
-/* @var $tags \common\models\tag\Tag[] */
 
-$this->title = 'Umber Blog';
+$this->title = 'User posts.';
 ?>
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>The Umber Blog.</h1>
+        <h1>My Posts.</h1>
     </div>
 
     <div class="body-content">
 
+        <?php if (!count($posts)) { ?>
+            <div class="jumbotron">
+                <h2>Empty.</h2>
+            </div>
+        <?php } ?>
+
         <div class="row">
-            <div class="col-lg-10">
-                <?php if (!count($posts)) { ?>
-                    <div class="jumbotron">
-                        <h2>Empty.</h2>
-                    </div>
-                <?php } ?>
+            <div class="col-lg-8 col-lg-offset-2">
                 <?php foreach ($posts as $post) { ?>
                     <div class="col-lg-12">
+                        <?php if ($post->status == \common\models\post\Post::STATUS_ON_MODERATION) { ?>
+                            <span class="label label-warning">On moderation / hidden: <?= $post->hide ?></span>
+                        <?php } else { ?>
+                            <span class="label label-success">Published / hidden: <?= $post->hide ?></span>
+                        <?php } ?>
                         <h2>
-                            <a href="<?= \yii\helpers\Url::to(['post/view', 'slug' => $post->slug]) ?>">
+                            <a href="<?= \yii\helpers\Url::to(['post/user-post', 'slug' => $post->slug]) ?>">
                                 <?= \yii\helpers\Html::encode($post->title) ?>
                             </a>
                         </h2>
@@ -54,24 +59,19 @@ $this->title = 'Umber Blog';
                                     <?= $post->getCreatedAtRelative() ?>
                                 </small>
                             </time>
+                            <a href="<?= \yii\helpers\Url::to(['/post/edit', 'slug' => $post->slug]) ?>" class="btn btn-link">
+                                Edit
+                            </a>
                         </p>
                         <hr>
                     </div>
                 <?php } ?>
                 <p>
-                    <?php
-                    echo \yii\widgets\LinkPager::widget([
+                    <?= \yii\widgets\LinkPager::widget([
                         'pagination' => $pagination,
                     ]);
                     ?>
                 </p>
-            </div>
-            <div class="col-lg-2">
-                <a href="<?= \yii\helpers\Url::to(['site/index']) ?>" class="btn btn-default">Reset filter</a>
-                <hr>
-                <?php foreach ($tags as $tag) { ?>
-                    <a href="<?= \yii\helpers\Url::to(['site/index', 'tag' => $tag->name]) ?>" class="label label-info"><?= $tag->name ?></a>
-                <?php } ?>
             </div>
         </div>
     </div>

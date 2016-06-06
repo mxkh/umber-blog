@@ -279,4 +279,44 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return self::namedStatuses()[$this->status];
     }
+
+    /**
+     * Checks if is current user is admin
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role == self::ROLE_ADMIN;
+    }
+
+    /**
+     * Checks if is current user is moderator
+     *
+     * @return bool
+     */
+    public function isModerator(): bool
+    {
+        return $this->role == self::ROLE_MODERATOR;
+    }
+
+    /**
+     * Checks if is current user is author
+     *
+     * @return bool
+     */
+    public function isAuthor(): bool
+    {
+        return $this->role == self::ROLE_AUTHOR;
+    }
+
+    /**
+     * Checks if is current user is banned
+     *
+     * @return bool
+     */
+    public function isBanned(): bool
+    {
+        return $this->role == self::ROLE_BANNED;
+    }
 }
